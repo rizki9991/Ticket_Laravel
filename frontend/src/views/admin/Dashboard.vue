@@ -1,22 +1,74 @@
 <script setup>
-// TODO: Import necessary dependencies
-// Hint: You'll need to import from vue, chart.js/auto, pinia, feather-icons, lodash, and luxon
+import { onMounted, watch, watchEffect } from 'vue';
+import { Chart } from 'chart.js/auto';
+import { useDashboardStore } from '@/stores/dashboard';
+import { useTicketStore } from '@/stores/ticket';
+import { storeToRefs } from 'pinia';
+import feather from 'feather-icons'
+import { capitalize } from 'lodash';
+import { DateTime } from 'luxon';
 
-// TODO: Initialize dashboard store and get necessary refs
-// Hint: Use useDashboardStore() and storeToRefs()
+const dashboardStore = useDashboardStore()
+const {statistic} = storeToRefs(dashboardStore)
+const {fetchStatistics} = dashboardStore
 
-// TODO: Initialize ticket store and get necessary refs
-// Hint: Use useTicketStore() and storeToRefs()
+const ticketStore = useTicketStore()
+const {tickets} = storeToRefs(ticketStore)
+const {fetchTickets} = ticketStore 
 
-// TODO: Create toggleTicketMenu function
-// Hint: This should toggle the showMenu property of a ticket
+const toggleTicketMenu = (ticket) => {
+        ticket.showMenu = !ticket.showMenu
+}
 
-// TODO: Create chart variable and watch effect
-// Hint: Watch statistic changes and update chart data
+let chart = null
+watch (statistic, () => {
+    if (statistic.value && chart) {
+        chart.data.datasets[0].data = [
+            statistic.value?.status_retribution?.open,
+            statistic.value?.status_retribution?.on_progress,
+            statistic.value?.status_retribution?.resolved,
+            statistic.value?.status_retribution?.rejected,
+        ]
+        chart.update()
+    }}, {deep: true})
 
-// TODO: Implement onMounted hook
-// Hint: Fetch tickets and statistics, initialize chart with status distribution data, initialize feather icons
+onMounted(async() => {
+    await fetchStatistics()
+    await fetchTickets()
 
+    const statusCtx = document.getElementById('statusChart')?.getContext('2d')
+
+    if (statusCtx && statistic.value) {
+        chart = new Chart(statusCtx,{
+            type : 'doughnut',
+            data: {
+                labels: ['open', 'on_progress', 'resolved', 'rejected'],
+                datasets: [{
+                    data:[
+                        statistic.value?.status_retribution?.open,
+                        statistic.value?.status_retribution?.on_progress,
+                        statistic.value?.status_retribution?.resolved,
+                        statistic.value?.status_retribution?.rejected,
+                    ],
+                    backgroundColor:[
+                        'green','yellow','blue','red'
+                    ]
+                }]
+            },
+            options:{
+                responsive:true,
+                plugins:{
+                    legend:{
+                        position: 'bottom'
+                    }
+                },
+                cutout: '70%'
+            }
+        })
+    }
+
+    feather.replace()
+})
 </script>
 
 <template>
