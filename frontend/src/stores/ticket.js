@@ -5,7 +5,7 @@ import router from "@/router";
 
 export const useTicketStore = defineStore("ticket", {
     state: () => ({
-            ticket: [],
+            tickets: [],
             loading : false,
             error : null,
             success : null,
