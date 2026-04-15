@@ -52,13 +52,24 @@ export const useAuthStore = defineStore("auth", {
         },
 
         async logout() {
-            // TODO: Implement logout action
-            // Steps:
-            // 1. Set loading state
-            // 2. Make API call to logout endpoint
-            // 3. Remove token from cookies
-            // 4. Clear user state
-            // 5. Redirect to login
+            this.loading = true
+
+            try {
+                const response = await axiosInstance.post('/logout')
+
+                Cookies.remove('token')
+
+                this.user = null
+                this.error = null
+
+                this.success = response.data.message
+
+                router.push({name: 'login'})
+            } catch (error) {
+                this.error = handleError(error)
+            }finally{
+                this.loading = false
+            }
         },
 
         async checkAuth() {
