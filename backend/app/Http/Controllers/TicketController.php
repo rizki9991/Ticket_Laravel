@@ -145,7 +145,7 @@ class TicketController extends Controller
             if (auth()->user()->role == 'admin') {
                 $ticket->status = $data['status'];
                 if ($data['status'] == 'resolved') {
-                    $ticket->resolved_at = now();
+                    $ticket->completed_at = now();
                 }
                 $ticket->save();
             }
