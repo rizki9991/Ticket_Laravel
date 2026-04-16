@@ -18,7 +18,7 @@ return new class extends Migration
             $table->text('title');
             $table->longtext('description');
             $table->enum('status', ['open', 'onprogress', 'resolved', 'rejected'])->default('open');
-            $table->enum('priority', ['low', 'normal', 'heigh' ]);
+            $table->enum('priority', ['low', 'normal', 'hegh' ]);
             $table->timestamps();
             $table->timestamp('completed_at')->nullable();
         });

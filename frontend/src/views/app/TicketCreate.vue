@@ -1,27 +1,34 @@
 <script setup>
-// TODO: Import necessary dependencies
-// Hint: You'll need to import from vue, pinia, feather-icons
+import { onMounted, ref } from 'vue';
+import { useTicketStore } from '@/stores/ticket';
+import { storeToRefs } from 'pinia';
+import feather from 'feather-icons'
 
-// TODO: Initialize ticket store and get necessary refs
-// Hint: Use useTicketStore() and storeToRefs()
+const ticketStore = useTicketStore()
+const {success, error, loading} = storeToRefs(ticketStore)
+const {createTicket} = ticketStore
 
 // TODO: Create form ref with ticket fields
 // Hint: You'll need title, description, priority
 const form = ref({
-    // Your form fields here
+    title: '',
+    description: '',
+    priority: '',
 })
 
 // TODO: Implement handleSubmit function
 // Hint: This should call the createTicket function from ticket store
 // and handle any errors
 const handleSubmit = async () => {
-    // Your code here
+        console.log('DATA KIRIM:', form.value)
+    await createTicket(form.value)
+        console.log('RESPONSE BACKEND:', res)
 }
 
 // TODO: Implement onMounted hook
 // Hint: Initialize feather icons
 onMounted(async () => {
-    // Your code here
+    feather.replace()
 })
 </script>
 
@@ -83,8 +90,8 @@ onMounted(async () => {
                         </div>
                     </label>
                     <label class="relative flex cursor-pointer rounded-lg border"
-                        :class="[form.priority === 'medium' ? 'border-yellow-200 bg-yellow-50' : 'border-gray-200']">
-                        <input type="radio" v-model="form.priority" value="medium" class="sr-only">
+                        :class="[form.priority === 'normal' ? 'border-yellow-200 bg-yellow-50' : 'border-gray-200']">
+                        <input type="radio" v-model="form.priority" value="normal" class="sr-only">
                         <div class="flex w-full items-center justify-between p-4">
                             <div class="flex items-center">
                                 <div class="text-sm">
@@ -92,7 +99,7 @@ onMounted(async () => {
                                     <p class="text-gray-500">Normal</p>
                                 </div>
                             </div>
-                            <div class="shrink-0 text-yellow-600" v-show="form.priority === 'medium'">
+                            <div class="shrink-0 text-yellow-600" v-show="form.priority === 'normal'">
                                 <i data-feather="check-circle" class="w-6 h-6"></i>
                             </div>
                         </div>
