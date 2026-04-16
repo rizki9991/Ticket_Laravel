@@ -108,7 +108,15 @@ onMounted(async()=>{
                             <span
                                 class="px-3 py-1 text-xs font-medium text-blue-700 bg-blue-100 rounded-full">Open</span>
                             <span
-                                class="px-3 py-1 text-xs font-medium text-red-700 bg-red-100 rounded-full">Tinggi</span>
+                                :class="{
+                                    'text-green-700 bg-green-100': ticket.priority === 'low',
+                                    'text-yellow-700 bg-yellow-100': ticket.priority === 'normal' || ticket.priority === 'medium',
+                                    'text-red-700 bg-red-100': ticket.priority === 'high',
+                                }"
+                                class="px-3 py-1 text-xs font-medium rounded-full"
+                            >
+                                {{ ticket.priority }}
+                            </span>
                         </div>
                         <p class="text-sm text-gray-500 mt-1">#{{ ticket.code }} • Dibuat pada {{
                             DateTime.fromISO(ticket.created_at).toFormat('dd MMMM yyyy, HH:mm') }}</p>
